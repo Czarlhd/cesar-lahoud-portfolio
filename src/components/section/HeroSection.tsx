@@ -26,7 +26,7 @@ export default function HeroSection() {
 					About Me
 				</h2>
 				<p className="max-w-xl mr-auto text-sm md:text-lg text-neutral-700 dark:text-neutral-400 text-start mt-[20px]">
-					Hi, I'm Cesar, a passionate software engineer with
+					Hi, I&apos;m Cesar, a passionate software engineer with
 					experience in full-stack development, UI design, and
 					real-time data systems. I currently work at Citi, where I
 					build high-performance applications that traders rely on
@@ -39,7 +39,7 @@ export default function HeroSection() {
 					a new skill is to dive in and start experimenting.
 				</p>
 				<p className="max-w-xl mr-auto text-sm md:text-lg text-neutral-700 dark:text-neutral-400 text-start mt-[20px]">
-					I'm always looking for the next opportunity to push
+					I&apos;m always looking for the next opportunity to push
 					boundaries and build something great.
 				</p>
 				<Skills />

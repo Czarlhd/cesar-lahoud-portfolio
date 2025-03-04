@@ -3,7 +3,6 @@ import { animate, motion } from "framer-motion";
 import React, { useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { IconBrandReact } from "@tabler/icons-react";
-import { BiLogoPostgresql } from "react-icons/bi";
 import { FcLinux } from "react-icons/fc";
 
 export function Skills() {

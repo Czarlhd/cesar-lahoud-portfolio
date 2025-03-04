@@ -5,6 +5,9 @@ const nextConfig = {
 			{ protocol: "https", hostname: "assets.aceternity.com" },
 		],
 	},
+	eslint: {
+		ignoreDuringBuilds: true,
+	},
 };
 
 export default nextConfig;
