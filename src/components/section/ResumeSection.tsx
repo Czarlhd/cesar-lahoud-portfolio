@@ -22,7 +22,7 @@ export default function ResumeSection() {
 								className="z-50"
 								characters="Angular Java KDB/Q Linux SQL CI/CD SpringBoot Equities Data Trading "
 							>
-								<ul className="backdrop-blur-sm bg-black/40 rounded-lg ">
+								<ul className="backdrop-blur-sm bg-black rounded-lg ">
 									<p className="text-blue-400 mt-[10px] text-lg ">
 										Full Stack Developer - Equities
 									</p>
@@ -68,7 +68,7 @@ export default function ResumeSection() {
 							className="z-50"
 							characters="Angular C# SQL .Net CI/CD Rates Bonds Trading "
 						>
-							<ul className="backdrop-blur-sm bg-black/40 rounded-lg ">
+							<ul className="backdrop-blur-sm bg-black rounded-lg ">
 								<p className="text-blue-400 mt-[10px] text-lg">
 									UI Developer - Rates
 								</p>
@@ -115,7 +115,7 @@ export default function ResumeSection() {
 							className="z-50"
 							characters="React Node.js PostgreSQL Client Full-Stack CI/CD "
 						>
-							<ul className="backdrop-blur-sm bg-black/40 rounded-lg ">
+							<ul className="backdrop-blur-sm bg-black rounded-lg ">
 								<p className="text-blue-400 mt-[10px] text-lg">
 									Full Stack Developer - Intern
 								</p>
@@ -200,6 +200,23 @@ export default function ResumeSection() {
 			title: "Certificates",
 			content: (
 				<div className="flex flex-col gap-[30px]">
+					<div>
+						<div className="flex flex-row gap-2 items-center">
+							<TailwindCSSLogo className="h-8 w-8" />
+							<h4 className="text-[#f4f4f4] text-[1.8rem] font-[600]">
+								Tailwind CSS v4 - Beginner to Pro
+							</h4>
+						</div>
+
+						<ul>
+							<p className="text-blue-400 mt-[10px] text-lg">
+								Udemy
+							</p>
+							<p className="text-blue-400 mb-[10px] text-sm">
+								2022
+							</p>
+						</ul>
+					</div>
 					<div>
 						<div className="flex flex-row gap-2 items-center">
 							<PostgreSQLLogo className="h-8 w-8" />
@@ -335,6 +352,28 @@ export const McGillLogo = ({ className }: { className?: string }) => {
 					fill="#fff"
 				/>
 			</g>
+		</svg>
+	);
+};
+
+export const TailwindCSSLogo = ({ className }: { className?: string }) => {
+	return (
+		<svg
+			xmlns="http://www.w3.org/2000/svg"
+			height="1504"
+			preserveAspectRatio="xMidYMid"
+			width="2500"
+			viewBox="0 0 256 153.6"
+			className={className}
+		>
+			<linearGradient id="a" x1="-2.778%" y1="32%" y2="67.556%">
+				<stop offset="0" stop-color="#2298bd" />
+				<stop offset="1" stop-color="#0ed7b5" />
+			</linearGradient>
+			<path
+				d="M128 0C93.867 0 72.533 17.067 64 51.2 76.8 34.133 91.733 27.733 108.8 32c9.737 2.434 16.697 9.499 24.401 17.318C145.751 62.057 160.275 76.8 192 76.8c34.133 0 55.467-17.067 64-51.2-12.8 17.067-27.733 23.467-44.8 19.2-9.737-2.434-16.697-9.499-24.401-17.318C174.249 14.743 159.725 0 128 0zM64 76.8C29.867 76.8 8.533 93.867 0 128c12.8-17.067 27.733-23.467 44.8-19.2 9.737 2.434 16.697 9.499 24.401 17.318C81.751 138.857 96.275 153.6 128 153.6c34.133 0 55.467-17.067 64-51.2-12.8 17.067-27.733 23.467-44.8 19.2-9.737-2.434-16.697-9.499-24.401-17.318C110.249 91.543 95.725 76.8 64 76.8z"
+				fill="url(#a)"
+			/>
 		</svg>
 	);
 };
