@@ -231,7 +231,7 @@ export const MAP_LOCATIONS: MapLocation[] = [
 		],
 	},
 	{
-		id: "Kuwait",
+		id: "kuwait",
 		name: "Kuwait City, Kuwait",
 		coordinates: [47.9774, 29.3759],
 		entries: [
@@ -314,7 +314,7 @@ export const SKILLS: SkillTree[] = [
 					{
 						name: "Spring Boot",
 						proficiency: "advanced",
-						yearsOfExperience: 2,
+						yearsOfExperience: 3,
 					},
 					{
 						name: "Python",
@@ -340,6 +340,21 @@ export const SKILLS: SkillTree[] = [
 						name: "PostgreSQL",
 						proficiency: "advanced",
 						yearsOfExperience: 3,
+					},
+				],
+			},
+			{
+				name: "DevOps",
+				children: [
+					{
+						name: "CI/CD Pipelines",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "Docker",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
 					},
 				],
 			},
@@ -388,10 +403,17 @@ export const SKILLS: SkillTree[] = [
 				],
 			},
 			{
-				name: "Cooking",
+				name: "Cuisine",
 				children: [
-					{ name: "French Cuisine", proficiency: "advanced" },
-					{ name: "Middle Eastern Cuisine", proficiency: "advanced" },
+					{ name: "Cooking", proficiency: "advanced" },
+					{ name: "Cocktails", proficiency: "advanced" },
+				],
+			},
+			{
+				name: "Building",
+				children: [
+					{ name: "Home Server", proficiency: "intermediate" },
+					{ name: "3D Printing", proficiency: "beginner" },
 				],
 			},
 		],

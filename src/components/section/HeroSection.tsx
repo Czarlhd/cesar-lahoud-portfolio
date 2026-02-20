@@ -1,6 +1,4 @@
 import React from "react";
-import { ShootingStars } from "@/components/ui/shooting-stars";
-import { StarsBackground } from "@/components/ui/stars-background";
 export default function HeroSection() {
 	return (
 		<div
@@ -42,9 +40,6 @@ export default function HeroSection() {
 					boundaries and build something great.
 				</p>
 			</div>
-
-			<ShootingStars className="z-[-1]" />
-			<StarsBackground className="z-[-1]" />
 		</div>
 	);
 }

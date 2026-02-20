@@ -143,14 +143,9 @@ function buildLayout(
 		}
 	}
 
-	// Center root over its children
+	// Center root in the middle of the SVG
 	const rootNode = nodes.find((n) => n.id === "root")!;
-	const rootChildren = nodes.filter((n) => n.parentId === "root");
-	if (rootChildren.length > 0) {
-		rootNode.x =
-			rootChildren.reduce((sum, c) => sum + c.x, 0) /
-			rootChildren.length;
-	}
+	rootNode.x = SVG_WIDTH / 2;
 
 	return nodes;
 }

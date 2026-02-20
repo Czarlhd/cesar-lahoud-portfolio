@@ -11,8 +11,10 @@ interface ExperienceTimelineProps {
 }
 
 function buildTimelineEntries(): TimelineEntry[] {
+	const HIDDEN_LOCATIONS = ["riyadh", "kuwait", "khobar"];
 	const entries: TimelineEntry[] = [];
 	for (const loc of MAP_LOCATIONS) {
+		if (HIDDEN_LOCATIONS.includes(loc.id)) continue;
 		for (const entry of loc.entries) {
 			for (const pos of entry.positions) {
 				entries.push({
