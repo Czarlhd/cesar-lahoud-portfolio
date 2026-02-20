@@ -27,9 +27,9 @@ const TimelineCard = forwardRef<HTMLDivElement, TimelineCardProps>(
 			<motion.div
 				ref={ref}
 				onClick={onClick}
-				whileHover={{ scale: 1.03, y: -2 }}
+				whileHover={{ scale: 1.02, x: 4 }}
 				className={cn(
-					"flex-shrink-0 w-[220px] cursor-pointer rounded-lg border p-4",
+					"w-full cursor-pointer rounded-lg border p-3",
 					"bg-neutral-900/80 backdrop-blur-sm transition-colors duration-200",
 					isEntryActive
 						? "border-blue-500 shadow-lg shadow-blue-500/20"

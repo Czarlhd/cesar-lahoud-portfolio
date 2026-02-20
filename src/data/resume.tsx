@@ -113,21 +113,35 @@ export const EDUCATION = [
 		],
 	},
 	{
-		name: "Ecole Francaise Internationale de Riyadh",
-		logo: (
-			<Image
-				width={0}
-				height={0}
-				className="h-6 w-6"
-				src="/images/cndj.png"
-				alt="cndj logo"
-			/>
-		),
+		name: "EFIR - French International School of Riyadh",
+		logo: null,
 		positions: [
 			{
 				id: "highschool_riyadh",
 				title: "Middle School",
 				timeline: "2006 - 2016",
+			},
+		],
+	},
+	{
+		name: "French School - Kuwait",
+		logo: null,
+		positions: [
+			{
+				id: "highschool_kuwait",
+				title: "Kindergarten",
+				timeline: "2003 - 2006",
+			},
+		],
+	},
+	{
+		name: "Born in Khobar, Saudi Arabia",
+		logo: null,
+		positions: [
+			{
+				id: "born_khobar",
+				title: "Born in Khobar, Saudi Arabia",
+				timeline: "2001 - 2003",
 			},
 		],
 	},
@@ -189,6 +203,32 @@ export const MAP_LOCATIONS: MapLocation[] = [
 				name: EDUCATION[2].name,
 				logo: EDUCATION[2].logo,
 				positions: EDUCATION[2].positions,
+			},
+		],
+	},
+	{
+		id: "Kuwait",
+		name: "Kuwait City, Kuwait",
+		coordinates: [47.9774, 29.3759],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[3].name,
+				logo: EDUCATION[3].logo,
+				positions: EDUCATION[3].positions,
+			},
+		],
+	},
+	{
+		id: "khobar",
+		name: "Khobar, Saudi Arabia",
+		coordinates: [50.2092, 26.2175],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[4].name,
+				logo: EDUCATION[4].logo,
+				positions: EDUCATION[4].positions,
 			},
 		],
 	},

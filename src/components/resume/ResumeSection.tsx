@@ -42,24 +42,26 @@ export default function ResumeSection() {
 				Experience & Education
 			</h2>
 
-			<div className="relative max-w-5xl mx-auto">
-				<WorldMap
-					activeLocationId={activeLocationId}
-					onPinClick={handlePinClick}
-				/>
-				<PinPopup
-					location={activeLocation}
-					activeEntryId={activeEntryId}
-					onClose={handlePopupClose}
-				/>
-			</div>
+			<div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
+				<div className="relative flex-1 min-w-0">
+					<WorldMap
+						activeLocationId={activeLocationId}
+						onPinClick={handlePinClick}
+					/>
+					<PinPopup
+						location={activeLocation}
+						activeEntryId={activeEntryId}
+						onClose={handlePopupClose}
+					/>
+				</div>
 
-			<div className="max-w-5xl mx-auto">
-				<ExperienceTimeline
-					activeLocationId={activeLocationId}
-					activeEntryId={activeEntryId}
-					onEntryClick={handleTimelineEntryClick}
-				/>
+				<div className="md:w-[280px] flex-shrink-0">
+					<ExperienceTimeline
+						activeLocationId={activeLocationId}
+						activeEntryId={activeEntryId}
+						onEntryClick={handleTimelineEntryClick}
+					/>
+				</div>
 			</div>
 		</section>
 	);

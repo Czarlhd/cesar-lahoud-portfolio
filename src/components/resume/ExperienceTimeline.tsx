@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useEffect, useMemo } from "react";
+import { useRef, useEffect, useMemo, useState, useCallback } from "react";
 import TimelineCard, { TimelineEntry } from "./TimelineCard";
 import { MAP_LOCATIONS } from "@/data/resume";
 
@@ -36,7 +36,17 @@ export default function ExperienceTimeline({
 	onEntryClick,
 }: ExperienceTimelineProps) {
 	const cardRefs = useRef<Map<string, HTMLDivElement>>(new Map());
+	const scrollRef = useRef<HTMLDivElement>(null);
+	const [scrollProgress, setScrollProgress] = useState(0);
 	const entries = useMemo(() => buildTimelineEntries(), []);
+
+	const handleScroll = useCallback(() => {
+		const el = scrollRef.current;
+		if (!el) return;
+		const { scrollTop, scrollHeight, clientHeight } = el;
+		const maxScroll = scrollHeight - clientHeight;
+		setScrollProgress(maxScroll > 0 ? scrollTop / maxScroll : 0);
+	}, []);
 
 	useEffect(() => {
 		if (activeEntryId && cardRefs.current.has(activeEntryId)) {
@@ -44,16 +54,25 @@ export default function ExperienceTimeline({
 			card?.scrollIntoView({
 				behavior: "smooth",
 				block: "nearest",
-				inline: "center",
 			});
 		}
 	}, [activeEntryId]);
 
 	return (
-		<div className="relative mt-8">
-			<div className="absolute top-1/2 left-0 right-0 h-[2px] bg-neutral-800 -translate-y-1/2" />
+		<div className="relative h-full">
+			{/* Background track */}
+			<div className="absolute top-0 bottom-0 left-3 w-[2px] bg-neutral-800" />
+			{/* Progress fill */}
+			<div
+				className="absolute top-0 left-3 w-[2px] bg-blue-500 transition-all duration-150"
+				style={{ height: `${scrollProgress * 100}%` }}
+			/>
 
-			<div className="relative flex gap-4 overflow-x-auto pb-4 px-4">
+			<div
+				ref={scrollRef}
+				onScroll={handleScroll}
+				className="relative flex flex-col gap-3 overflow-y-auto max-h-[70vh] py-2 pl-8 pr-2 scrollbar-hide"
+			>
 				{entries.map((entry) => (
 					<TimelineCard
 						key={entry.id}
