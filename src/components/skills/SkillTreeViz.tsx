@@ -8,7 +8,7 @@ const SVG_HEIGHT = 480;
 const H_PADDING = 50;
 const ROOT_Y = 40;
 const LEVEL_HEIGHT = 95;
-const GAP_SLOTS = 1.5;
+const GAP_SLOTS = 0.5;
 
 const PROFICIENCY_COLORS: Record<string, string> = {
 	beginner: "#9ca3af",
@@ -91,7 +91,9 @@ function buildLayout(
 					isLeaf: leaf,
 					color,
 					proficiency: leaf ? child.proficiency : undefined,
-					yearsOfExperience: leaf ? child.yearsOfExperience : undefined,
+					yearsOfExperience: leaf
+						? child.yearsOfExperience
+						: undefined,
 					depth,
 				});
 
@@ -187,10 +189,7 @@ export default function SkillTreeViz({ trees, colors }: Props) {
 						width="220%"
 						height="220%"
 					>
-						<feGaussianBlur
-							stdDeviation="5"
-							result="coloredBlur"
-						/>
+						<feGaussianBlur stdDeviation="5" result="coloredBlur" />
 						<feMerge>
 							<feMergeNode in="coloredBlur" />
 							<feMergeNode in="SourceGraphic" />
@@ -268,9 +267,7 @@ export default function SkillTreeViz({ trees, colors }: Props) {
 									isRoot || isTreeNode ? "none" : node.color
 								}
 								strokeWidth={isHovered ? 2 : 1.5}
-								filter={
-									isHovered ? "url(#glow)" : undefined
-								}
+								filter={isHovered ? "url(#glow)" : undefined}
 								style={{ transition: "all 0.15s ease" }}
 							/>
 
@@ -318,7 +315,9 @@ export default function SkillTreeViz({ trees, colors }: Props) {
 									textAnchor="start"
 									fontSize="9"
 									fill={
-										isHovered ? node.color : `${node.color}99`
+										isHovered
+											? node.color
+											: `${node.color}99`
 									}
 									fontWeight={isHovered ? "600" : "400"}
 									transform={`rotate(40, ${node.x}, ${node.y + r + 10})`}
