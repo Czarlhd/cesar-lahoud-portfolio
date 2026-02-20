@@ -1,3 +1,9 @@
+import ResumeSection from "@/components/resume/ResumeSection";
+
 export default function Home() {
-	return <div> CV</div>;
+	return (
+		<main>
+			<ResumeSection />
+		</main>
+	);
 }

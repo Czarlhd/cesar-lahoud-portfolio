@@ -7,6 +7,25 @@ import {
 	TailwindCSSLogo,
 } from "../components/logos";
 import Image from "next/image";
+
+export interface MapLocationEntry {
+	type: "job" | "education";
+	name: string;
+	logo: React.ReactNode;
+	positions: {
+		id: string;
+		title: string;
+		points?: string[];
+		timeline: string;
+	}[];
+}
+
+export interface MapLocation {
+	id: string;
+	name: string;
+	coordinates: [number, number]; // [longitude, latitude]
+	entries: MapLocationEntry[];
+}
 export const JOBS = [
 	{
 		name: "Citi Bank",
@@ -90,6 +109,86 @@ export const EDUCATION = [
 				id: "highschool",
 				title: "French baccalaureate - Highest Honors",
 				timeline: "2016 - 2019",
+			},
+		],
+	},
+	{
+		name: "Ecole Francaise Internationale de Riyadh",
+		logo: (
+			<Image
+				width={0}
+				height={0}
+				className="h-6 w-6"
+				src="/images/cndj.png"
+				alt="cndj logo"
+			/>
+		),
+		positions: [
+			{
+				id: "highschool_riyadh",
+				title: "Middle School",
+				timeline: "2006 - 2016",
+			},
+		],
+	},
+];
+
+export const MAP_LOCATIONS: MapLocation[] = [
+	{
+		id: "toronto",
+		name: "Toronto, Canada",
+		coordinates: [-79.3832, 43.6532],
+		entries: [
+			{
+				type: "job",
+				name: JOBS[0].name,
+				logo: JOBS[0].logo,
+				positions: JOBS[0].positions,
+			},
+		],
+	},
+	{
+		id: "montreal",
+		name: "Montreal, Canada",
+		coordinates: [-73.5674, 45.5019],
+		entries: [
+			{
+				type: "job",
+				name: JOBS[1].name,
+				logo: JOBS[1].logo,
+				positions: JOBS[1].positions,
+			},
+			{
+				type: "education",
+				name: EDUCATION[0].name,
+				logo: EDUCATION[0].logo,
+				positions: EDUCATION[0].positions,
+			},
+		],
+	},
+	{
+		id: "beirut",
+		name: "Beirut, Lebanon",
+		coordinates: [35.4955, 33.8938],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[1].name,
+				logo: EDUCATION[1].logo,
+				positions: EDUCATION[1].positions,
+			},
+		],
+	},
+	{
+		id: "riyadh",
+		name: "Riyadh, Saudi Arabia",
+		coordinates: [34.7122, 24.7136],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[2].name,
+				logo: EDUCATION[2].logo,
+				positions: EDUCATION[2].positions,
 			},
 		],
 	},
