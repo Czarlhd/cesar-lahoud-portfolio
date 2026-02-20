@@ -399,7 +399,8 @@ export const SKILLS: SkillTree[] = [
 				name: "Sports",
 				children: [
 					{ name: "Snowboarding", proficiency: "advanced" },
-					{ name: "Parkour", proficiency: "intermediate" },
+					{ name: "Swimming", proficiency: "advanced" },
+					{ name: "Gym", proficiency: "intermediate" },
 				],
 			},
 			{
