@@ -7,6 +7,49 @@ import {
 	TailwindCSSLogo,
 } from "../components/logos";
 import Image from "next/image";
+
+export interface MapLocationEntry {
+	type: "job" | "education";
+	name: string;
+	logo: React.ReactNode;
+	positions: {
+		id: string;
+		title: string;
+		points?: string[];
+		timeline: string;
+	}[];
+}
+
+export interface MapLocation {
+	id: string;
+	name: string;
+	coordinates: [number, number]; // [longitude, latitude]
+	entries: MapLocationEntry[];
+}
+
+export interface SkillLeaf {
+	name: string;
+	icon?: React.ReactNode;
+	proficiency?:
+		| "beginner"
+		| "intermediate"
+		| "advanced"
+		| "expert"
+		| "fluent";
+	yearsOfExperience?: number;
+}
+
+export interface SkillBranch {
+	name: string;
+	children: (SkillBranch | SkillLeaf)[];
+}
+
+export interface SkillTree {
+	name: string;
+	icon?: React.ReactNode;
+	branches: SkillBranch[];
+}
+
 export const JOBS = [
 	{
 		name: "Citi Bank",
@@ -93,6 +136,126 @@ export const EDUCATION = [
 			},
 		],
 	},
+	{
+		name: "EFIR - French International School of Riyadh",
+		logo: null,
+		positions: [
+			{
+				id: "highschool_riyadh",
+				title: "Middle School",
+				timeline: "2006 - 2016",
+			},
+		],
+	},
+	{
+		name: "French School - Kuwait",
+		logo: null,
+		positions: [
+			{
+				id: "highschool_kuwait",
+				title: "Kindergarten",
+				timeline: "2003 - 2006",
+			},
+		],
+	},
+	{
+		name: "Born in Khobar, Saudi Arabia",
+		logo: null,
+		positions: [
+			{
+				id: "born_khobar",
+				title: "Born in Khobar, Saudi Arabia",
+				timeline: "2001 - 2003",
+			},
+		],
+	},
+];
+
+export const MAP_LOCATIONS: MapLocation[] = [
+	{
+		id: "toronto",
+		name: "Toronto, Canada",
+		coordinates: [-79.3832, 43.6532],
+		entries: [
+			{
+				type: "job",
+				name: JOBS[0].name,
+				logo: JOBS[0].logo,
+				positions: JOBS[0].positions,
+			},
+		],
+	},
+	{
+		id: "montreal",
+		name: "Montreal, Canada",
+		coordinates: [-73.5674, 45.5019],
+		entries: [
+			{
+				type: "job",
+				name: JOBS[1].name,
+				logo: JOBS[1].logo,
+				positions: JOBS[1].positions,
+			},
+			{
+				type: "education",
+				name: EDUCATION[0].name,
+				logo: EDUCATION[0].logo,
+				positions: EDUCATION[0].positions,
+			},
+		],
+	},
+	{
+		id: "beirut",
+		name: "Beirut, Lebanon",
+		coordinates: [35.4955, 33.8938],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[1].name,
+				logo: EDUCATION[1].logo,
+				positions: EDUCATION[1].positions,
+			},
+		],
+	},
+	{
+		id: "riyadh",
+		name: "Riyadh, Saudi Arabia",
+		coordinates: [34.7122, 24.7136],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[2].name,
+				logo: EDUCATION[2].logo,
+				positions: EDUCATION[2].positions,
+			},
+		],
+	},
+	{
+		id: "kuwait",
+		name: "Kuwait City, Kuwait",
+		coordinates: [47.9774, 29.3759],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[3].name,
+				logo: EDUCATION[3].logo,
+				positions: EDUCATION[3].positions,
+			},
+		],
+	},
+	{
+		id: "khobar",
+		name: "Khobar, Saudi Arabia",
+		coordinates: [50.2092, 26.2175],
+		entries: [
+			{
+				type: "education",
+				name: EDUCATION[4].name,
+				logo: EDUCATION[4].logo,
+				positions: EDUCATION[4].positions,
+			},
+		],
+	},
 ];
 
 export const CERTIFICATES = [
@@ -113,5 +276,146 @@ export const CERTIFICATES = [
 		logo: <PostgreSQLLogo className="h-8 w-8" />,
 		provider: "Coursera",
 		timeline: "2022",
+	},
+];
+
+export const SKILLS: SkillTree[] = [
+	{
+		name: "Software",
+		branches: [
+			{
+				name: "Frontend",
+				children: [
+					{
+						name: "React",
+						proficiency: "advanced",
+						yearsOfExperience: 4,
+					},
+					{
+						name: "Angular",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "Tailwind CSS",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+				],
+			},
+			{
+				name: "Backend",
+				children: [
+					{
+						name: "Java",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+					{
+						name: "Spring Boot",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+					{
+						name: "Python",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "FastAPI",
+						proficiency: "intermediate",
+						yearsOfExperience: 1,
+					},
+				],
+			},
+			{
+				name: "Data",
+				children: [
+					{
+						name: "KDB+/q",
+						proficiency: "intermediate",
+						yearsOfExperience: 1,
+					},
+					{
+						name: "PostgreSQL",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+				],
+			},
+			{
+				name: "DevOps",
+				children: [
+					{
+						name: "CI/CD Pipelines",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "Docker",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+				],
+			},
+		],
+	},
+	{
+		name: "Soft Skills",
+		branches: [
+			{
+				name: "Leadership",
+				children: [
+					{ name: "Team Management", proficiency: "advanced" },
+					{ name: "Mentoring", proficiency: "advanced" },
+				],
+			},
+			{
+				name: "Communication",
+				children: [
+					{ name: "Client-facing", proficiency: "advanced" },
+					{ name: "Technical Writing", proficiency: "intermediate" },
+				],
+			},
+		],
+	},
+	{
+		name: "Languages",
+		branches: [
+			{
+				name: "Spoken",
+				children: [
+					{ name: "English", proficiency: "fluent" },
+					{ name: "French", proficiency: "fluent" },
+					{ name: "Arabic", proficiency: "advanced" },
+				],
+			},
+		],
+	},
+	{
+		name: "Hobbies",
+		branches: [
+			{
+				name: "Sports",
+				children: [
+					{ name: "Snowboarding", proficiency: "advanced" },
+					{ name: "Parkour", proficiency: "intermediate" },
+				],
+			},
+			{
+				name: "Cuisine",
+				children: [
+					{ name: "Cooking", proficiency: "advanced" },
+					{ name: "Cocktails", proficiency: "advanced" },
+				],
+			},
+			{
+				name: "Building",
+				children: [
+					{ name: "Home Server", proficiency: "intermediate" },
+					{ name: "3D Printing", proficiency: "beginner" },
+				],
+			},
+		],
 	},
 ];

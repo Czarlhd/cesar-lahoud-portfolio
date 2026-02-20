@@ -1,12 +1,7 @@
 import React from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
-import {
-	IconHome,
-	IconMap,
-	IconBrain,
-	IconCode,
-	IconMail,
-} from "@tabler/icons-react";
+import { IconHome, IconMail } from "@tabler/icons-react";
+import { GoProjectRoadmap } from "react-icons/go";
 
 export function NavBar() {
 	const links = [
@@ -17,26 +12,13 @@ export function NavBar() {
 			),
 			href: "#home",
 		},
+
 		{
 			title: "Resume",
 			icon: (
-				<IconMap className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+				<GoProjectRoadmap className="h-full w-full text-neutral-500 dark:text-neutral-300" />
 			),
 			href: "#resume",
-		},
-		{
-			title: "Skills",
-			icon: (
-				<IconBrain className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-			),
-			href: "#skills",
-		},
-		{
-			title: "Projects",
-			icon: (
-				<IconCode className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-			),
-			href: "#projects",
 		},
 		{
 			title: "Contact",

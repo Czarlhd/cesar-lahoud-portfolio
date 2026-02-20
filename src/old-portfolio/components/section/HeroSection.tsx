@@ -1,4 +1,7 @@
 import React from "react";
+import { Skills } from "../ui/Skills";
+import { ShootingStars } from "../ui/shooting-stars";
+import { StarsBackground } from "../ui/stars-background";
 export default function HeroSection() {
 	return (
 		<div
@@ -39,7 +42,11 @@ export default function HeroSection() {
 					I&apos;m always looking for the next opportunity to push
 					boundaries and build something great.
 				</p>
+				<Skills />
 			</div>
+
+			<ShootingStars className="z-[-1]" />
+			<StarsBackground className="z-[-1]" />
 		</div>
 	);
 }
