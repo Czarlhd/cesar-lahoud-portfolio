@@ -3,11 +3,12 @@
 import { useState, useMemo } from "react";
 import { SkillTree, SkillBranch, SkillLeaf } from "@/data/resume";
 
-const SVG_WIDTH = 500;
-const SVG_HEIGHT = 320;
-const H_PADDING = 40;
-const ROOT_Y = 280;
-const LEVEL_HEIGHT = 100;
+const SVG_WIDTH = 1000;
+const SVG_HEIGHT = 480;
+const H_PADDING = 50;
+const ROOT_Y = 40;
+const LEVEL_HEIGHT = 95;
+const GAP_SLOTS = 1.5;
 
 const PROFICIENCY_COLORS: Record<string, string> = {
 	beginner: "#9ca3af",
@@ -28,100 +29,148 @@ interface LayoutNode {
 	y: number;
 	parentId: string | null;
 	isLeaf: boolean;
+	color: string;
 	proficiency?: string;
 	yearsOfExperience?: number;
 	depth: number;
 }
 
-function buildLayout(tree: SkillTree): LayoutNode[] {
+function buildLayout(
+	trees: SkillTree[],
+	treeColors: Record<string, string>,
+): LayoutNode[] {
 	const nodes: LayoutNode[] = [];
-	const leafIndices: Record<string, number> = {};
-	let leafCounter = 0;
+	const treeLeafIds: string[][] = [];
 
+	// Central root at the top
 	nodes.push({
 		id: "root",
-		label: tree.name,
-		x: SVG_WIDTH / 2,
+		label: "",
+		x: 0,
 		y: ROOT_Y,
 		parentId: null,
 		isLeaf: false,
+		color: "#ffffff",
 		depth: 0,
 	});
 
-	function traverse(
-		children: (SkillBranch | SkillLeaf)[],
-		parentId: string,
-		depth: number,
-	) {
-		children.forEach((child, idx) => {
-			const nodeId = `${parentId}_${idx}`;
-			const leaf = isLeaf(child);
+	// Build each skill tree as a branch off the root
+	trees.forEach((tree, tIdx) => {
+		const treeId = `t${tIdx}`;
+		const color = treeColors[tree.name] || "#ffffff";
+		const leafIds: string[] = [];
 
-			if (leaf) {
-				leafIndices[nodeId] = leafCounter++;
-			}
-
-			nodes.push({
-				id: nodeId,
-				label: child.name,
-				x: 0,
-				y: ROOT_Y - depth * LEVEL_HEIGHT,
-				parentId,
-				isLeaf: leaf,
-				proficiency: leaf ? child.proficiency : undefined,
-				yearsOfExperience: leaf ? child.yearsOfExperience : undefined,
-				depth,
-			});
-
-			if (!leaf) {
-				traverse((child as SkillBranch).children, nodeId, depth + 1);
-			}
+		nodes.push({
+			id: treeId,
+			label: tree.name,
+			x: 0,
+			y: ROOT_Y + LEVEL_HEIGHT,
+			parentId: "root",
+			isLeaf: false,
+			color,
+			depth: 1,
 		});
-	}
 
-	traverse(tree.branches, "root", 1);
+		function addChildren(
+			children: (SkillBranch | SkillLeaf)[],
+			parentId: string,
+			depth: number,
+		) {
+			children.forEach((child, idx) => {
+				const nodeId = `${parentId}_${idx}`;
+				const leaf = isLeaf(child);
 
-	const totalLeaves = Math.max(leafCounter, 1);
+				if (leaf) leafIds.push(nodeId);
+
+				nodes.push({
+					id: nodeId,
+					label: child.name,
+					x: 0,
+					y: ROOT_Y + depth * LEVEL_HEIGHT,
+					parentId,
+					isLeaf: leaf,
+					color,
+					proficiency: leaf ? child.proficiency : undefined,
+					yearsOfExperience: leaf ? child.yearsOfExperience : undefined,
+					depth,
+				});
+
+				if (!leaf) {
+					addChildren(
+						(child as SkillBranch).children,
+						nodeId,
+						depth + 1,
+					);
+				}
+			});
+		}
+
+		addChildren(tree.branches, treeId, 2);
+		treeLeafIds.push(leafIds);
+	});
+
+	// Assign leaf x positions with gaps between tree groups
+	const leafPositions: Record<string, number> = {};
+	let pos = 0;
+
+	treeLeafIds.forEach((leafIds, treeIdx) => {
+		if (treeIdx > 0) pos += GAP_SLOTS;
+		leafIds.forEach((leafId) => {
+			leafPositions[leafId] = pos;
+			pos += 1;
+		});
+	});
+
+	const totalSlots = Math.max(pos, 1);
 	const usableWidth = SVG_WIDTH - H_PADDING * 2;
-	const slotWidth = usableWidth / totalLeaves;
+	const slotWidth = usableWidth / totalSlots;
 
-	for (const [nodeId, leafIdx] of Object.entries(leafIndices)) {
+	for (const [nodeId, position] of Object.entries(leafPositions)) {
 		const node = nodes.find((n) => n.id === nodeId);
-		if (node) node.x = H_PADDING + (leafIdx + 0.5) * slotWidth;
+		if (node) node.x = H_PADDING + (position + 0.5) * slotWidth;
 	}
 
-	// Center internal (non-root, non-leaf) nodes over their children — deepest first
-	const internalNodes = nodes
+	// Center internal nodes over children — deepest first
+	const internals = nodes
 		.filter((n) => !n.isLeaf && n.id !== "root")
 		.sort((a, b) => b.depth - a.depth);
 
-	for (const node of internalNodes) {
+	for (const node of internals) {
 		const children = nodes.filter((n) => n.parentId === node.id);
 		if (children.length > 0) {
-			node.x = children.reduce((sum, c) => sum + c.x, 0) / children.length;
+			node.x =
+				children.reduce((sum, c) => sum + c.x, 0) / children.length;
 		}
+	}
+
+	// Center root over its children
+	const rootNode = nodes.find((n) => n.id === "root")!;
+	const rootChildren = nodes.filter((n) => n.parentId === "root");
+	if (rootChildren.length > 0) {
+		rootNode.x =
+			rootChildren.reduce((sum, c) => sum + c.x, 0) /
+			rootChildren.length;
 	}
 
 	return nodes;
 }
 
 interface Props {
-	tree: SkillTree;
-	color: string;
+	trees: SkillTree[];
+	colors: Record<string, string>;
 }
 
-export default function SkillTreeViz({ tree, color }: Props) {
+export default function SkillTreeViz({ trees, colors }: Props) {
 	const [hoveredId, setHoveredId] = useState<string | null>(null);
-	const nodes = useMemo(() => buildLayout(tree), [tree]);
-	const filterId = `glow_${tree.name.replace(/\s+/g, "_")}`;
+	const nodes = useMemo(() => buildLayout(trees, colors), [trees, colors]);
 
 	const connections = useMemo(() => {
 		return nodes
 			.filter((n) => n.parentId !== null)
-			.map((n) => {
-				const parent = nodes.find((p) => p.id === n.parentId)!;
-				return { from: parent, to: n };
-			});
+			.map((n) => ({
+				from: nodes.find((p) => p.id === n.parentId)!,
+				to: n,
+			}));
 	}, [nodes]);
 
 	const hoveredNode = hoveredId
@@ -136,8 +185,17 @@ export default function SkillTreeViz({ tree, color }: Props) {
 				style={{ overflow: "visible" }}
 			>
 				<defs>
-					<filter id={filterId} x="-60%" y="-60%" width="220%" height="220%">
-						<feGaussianBlur stdDeviation="5" result="coloredBlur" />
+					<filter
+						id="glow"
+						x="-60%"
+						y="-60%"
+						width="220%"
+						height="220%"
+					>
+						<feGaussianBlur
+							stdDeviation="5"
+							result="coloredBlur"
+						/>
 						<feMerge>
 							<feMergeNode in="coloredBlur" />
 							<feMergeNode in="SourceGraphic" />
@@ -153,9 +211,9 @@ export default function SkillTreeViz({ tree, color }: Props) {
 							key={`${from.id}-${to.id}`}
 							d={`M ${from.x} ${from.y} C ${from.x} ${midY} ${to.x} ${midY} ${to.x} ${to.y}`}
 							fill="none"
-							stroke={color}
+							stroke={to.color}
 							strokeWidth="1.5"
-							opacity="0.45"
+							opacity="0.4"
 						/>
 					);
 				})}
@@ -163,14 +221,26 @@ export default function SkillTreeViz({ tree, color }: Props) {
 				{/* Nodes */}
 				{nodes.map((node) => {
 					const isHovered = hoveredId === node.id;
-					const r = node.depth === 0 ? 12 : node.isLeaf ? 7 : 9;
+					const isRoot = node.depth === 0;
+					const isTreeNode = node.depth === 1;
+					const r = isRoot
+						? 14
+						: isTreeNode
+							? 11
+							: node.isLeaf
+								? 7
+								: 9;
 
 					return (
 						<g
 							key={node.id}
-							onMouseEnter={() => node.isLeaf && setHoveredId(node.id)}
+							onMouseEnter={() =>
+								node.isLeaf && setHoveredId(node.id)
+							}
 							onMouseLeave={() => setHoveredId(null)}
-							style={{ cursor: node.isLeaf ? "pointer" : "default" }}
+							style={{
+								cursor: node.isLeaf ? "pointer" : "default",
+							}}
 						>
 							{/* Pulse ring on hover */}
 							{isHovered && (
@@ -179,7 +249,7 @@ export default function SkillTreeViz({ tree, color }: Props) {
 									cy={node.y}
 									r={r + 8}
 									fill="none"
-									stroke={color}
+									stroke={node.color}
 									strokeWidth="1"
 									opacity="0.35"
 								/>
@@ -191,29 +261,77 @@ export default function SkillTreeViz({ tree, color }: Props) {
 								cy={node.y}
 								r={r}
 								fill={
-									node.depth === 0
-										? color
-										: isHovered
-											? `${color}60`
-											: `${color}25`
+									isRoot
+										? "#ffffff"
+										: isTreeNode
+											? node.color
+											: isHovered
+												? `${node.color}60`
+												: `${node.color}25`
 								}
-								stroke={color}
-								strokeWidth={node.depth === 0 ? 0 : isHovered ? 2 : 1.5}
-								filter={isHovered ? `url(#${filterId})` : undefined}
+								stroke={
+									isRoot || isTreeNode ? "none" : node.color
+								}
+								strokeWidth={isHovered ? 2 : 1.5}
+								filter={
+									isHovered ? "url(#glow)" : undefined
+								}
 								style={{ transition: "all 0.15s ease" }}
 							/>
 
-							{/* Labels — branches shown above node, root shown below */}
-							{!node.isLeaf && (
+							{/* Tree-level labels (below node) */}
+							{isTreeNode && (
 								<text
 									x={node.x}
-									y={node.y}
+									y={node.y + r + 16}
 									textAnchor="middle"
-									fontSize={node.depth === 0 ? 12 : 10}
-									fill={node.depth === 0 ? "#000000" : color}
-									dy={node.depth === 0 ? r + 16 : -(r + 8)}
+									fontSize="12"
+									fill={node.color}
+									fontWeight="700"
+									style={{
+										fontFamily: "inherit",
+										userSelect: "none",
+									}}
+								>
+									{node.label}
+								</text>
+							)}
+
+							{/* Branch-level labels (above node) */}
+							{node.depth === 2 && !node.isLeaf && (
+								<text
+									x={node.x}
+									y={node.y - r - 8}
+									textAnchor="middle"
+									fontSize="10"
+									fill={node.color}
 									fontWeight="600"
-									style={{ fontFamily: "inherit", userSelect: "none" }}
+									style={{
+										fontFamily: "inherit",
+										userSelect: "none",
+									}}
+								>
+									{node.label}
+								</text>
+							)}
+
+							{/* Leaf labels (below node, rotated) */}
+							{node.isLeaf && (
+								<text
+									x={node.x}
+									y={node.y + r + 10}
+									textAnchor="start"
+									fontSize="9"
+									fill={
+										isHovered ? node.color : `${node.color}99`
+									}
+									fontWeight={isHovered ? "600" : "400"}
+									transform={`rotate(40, ${node.x}, ${node.y + r + 10})`}
+									style={{
+										fontFamily: "inherit",
+										userSelect: "none",
+										transition: "fill 0.15s ease",
+									}}
 								>
 									{node.label}
 								</text>
@@ -233,13 +351,17 @@ export default function SkillTreeViz({ tree, color }: Props) {
 						transform: "translate(-50%, calc(-100% - 14px))",
 					}}
 				>
-					<p className="text-white font-semibold mb-0.5">{hoveredNode.label}</p>
+					<p className="text-white font-semibold mb-0.5">
+						{hoveredNode.label}
+					</p>
 					{hoveredNode.proficiency && (
 						<p
 							className="capitalize font-medium"
 							style={{
 								color:
-									PROFICIENCY_COLORS[hoveredNode.proficiency] ?? "#9ca3af",
+									PROFICIENCY_COLORS[
+										hoveredNode.proficiency
+									] ?? "#9ca3af",
 							}}
 						>
 							{hoveredNode.proficiency}

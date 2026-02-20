@@ -10,8 +10,6 @@ const TREE_COLORS: Record<string, string> = {
 	Hobbies: "#f97316",
 };
 
-const FALLBACK_COLORS = ["#60a5fa", "#4ade80", "#fbbf24", "#f97316"];
-
 export default function SkillsSection() {
 	return (
 		<section
@@ -22,24 +20,8 @@ export default function SkillsSection() {
 				My Skills
 			</h2>
 
-			<div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
-				{SKILLS.map((tree, idx) => {
-					const color =
-						TREE_COLORS[tree.name] ?? FALLBACK_COLORS[idx % FALLBACK_COLORS.length];
-					return (
-						<div
-							key={tree.name}
-							className="rounded-xl border p-4 md:p-6"
-							style={{
-								borderColor: `${color}35`,
-								background: `${color}07`,
-								boxShadow: `0 0 24px ${color}12`,
-							}}
-						>
-							<SkillTreeViz tree={tree} color={color} />
-						</div>
-					);
-				})}
+			<div className="max-w-7xl mx-auto">
+				<SkillTreeViz trees={SKILLS} colors={TREE_COLORS} />
 			</div>
 		</section>
 	);
