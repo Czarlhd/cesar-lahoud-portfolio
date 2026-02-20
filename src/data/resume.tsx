@@ -26,6 +26,30 @@ export interface MapLocation {
 	coordinates: [number, number]; // [longitude, latitude]
 	entries: MapLocationEntry[];
 }
+
+export interface SkillLeaf {
+	name: string;
+	icon?: React.ReactNode;
+	proficiency?:
+		| "beginner"
+		| "intermediate"
+		| "advanced"
+		| "expert"
+		| "fluent";
+	yearsOfExperience?: number;
+}
+
+export interface SkillBranch {
+	name: string;
+	children: (SkillBranch | SkillLeaf)[];
+}
+
+export interface SkillTree {
+	name: string;
+	icon?: React.ReactNode;
+	branches: SkillBranch[];
+}
+
 export const JOBS = [
 	{
 		name: "Citi Bank",
@@ -252,5 +276,124 @@ export const CERTIFICATES = [
 		logo: <PostgreSQLLogo className="h-8 w-8" />,
 		provider: "Coursera",
 		timeline: "2022",
+	},
+];
+
+export const SKILLS: SkillTree[] = [
+	{
+		name: "Software",
+		branches: [
+			{
+				name: "Frontend",
+				children: [
+					{
+						name: "React",
+						proficiency: "advanced",
+						yearsOfExperience: 4,
+					},
+					{
+						name: "Angular",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "Tailwind CSS",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+				],
+			},
+			{
+				name: "Backend",
+				children: [
+					{
+						name: "Java",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+					{
+						name: "Spring Boot",
+						proficiency: "advanced",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "Python",
+						proficiency: "intermediate",
+						yearsOfExperience: 2,
+					},
+					{
+						name: "FastAPI",
+						proficiency: "intermediate",
+						yearsOfExperience: 1,
+					},
+				],
+			},
+			{
+				name: "Data",
+				children: [
+					{
+						name: "KDB+/q",
+						proficiency: "intermediate",
+						yearsOfExperience: 1,
+					},
+					{
+						name: "PostgreSQL",
+						proficiency: "advanced",
+						yearsOfExperience: 3,
+					},
+				],
+			},
+		],
+	},
+	{
+		name: "Soft Skills",
+		branches: [
+			{
+				name: "Leadership",
+				children: [
+					{ name: "Team Management", proficiency: "advanced" },
+					{ name: "Mentoring", proficiency: "advanced" },
+				],
+			},
+			{
+				name: "Communication",
+				children: [
+					{ name: "Client-facing", proficiency: "advanced" },
+					{ name: "Technical Writing", proficiency: "intermediate" },
+				],
+			},
+		],
+	},
+	{
+		name: "Languages",
+		branches: [
+			{
+				name: "Spoken",
+				children: [
+					{ name: "English", proficiency: "fluent" },
+					{ name: "French", proficiency: "fluent" },
+					{ name: "Arabic", proficiency: "advanced" },
+				],
+			},
+		],
+	},
+	{
+		name: "Hobbies",
+		branches: [
+			{
+				name: "Sports",
+				children: [
+					{ name: "Snowboarding", proficiency: "advanced" },
+					{ name: "Parkour", proficiency: "intermediate" },
+				],
+			},
+			{
+				name: "Cooking",
+				children: [
+					{ name: "French Cuisine", proficiency: "advanced" },
+					{ name: "Middle Eastern Cuisine", proficiency: "advanced" },
+				],
+			},
+		],
 	},
 ];
