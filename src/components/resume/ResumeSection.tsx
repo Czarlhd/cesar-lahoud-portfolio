@@ -10,16 +10,18 @@ const WorldMap = dynamic(() => import("./WorldMap"), { ssr: false });
 
 export default function ResumeSection() {
 	const [activeLocationId, setActiveLocationId] = useState<string | null>(
-		null
+		null,
 	);
 	const [activeEntryId, setActiveEntryId] = useState<string | null>(null);
 
 	const activeLocation = activeLocationId
-		? MAP_LOCATIONS.find((loc) => loc.id === activeLocationId) ?? null
+		? (MAP_LOCATIONS.find((loc) => loc.id === activeLocationId) ?? null)
 		: null;
 
 	const handlePinClick = useCallback((locationId: string) => {
-		setActiveLocationId((prev) => (prev === locationId ? null : locationId));
+		setActiveLocationId((prev) =>
+			prev === locationId ? null : locationId,
+		);
 		setActiveEntryId(null);
 	}, []);
 
@@ -28,7 +30,7 @@ export default function ResumeSection() {
 			setActiveLocationId(locationId);
 			setActiveEntryId((prev) => (prev === entryId ? null : entryId));
 		},
-		[]
+		[],
 	);
 
 	const handlePopupClose = useCallback(() => {
@@ -39,7 +41,7 @@ export default function ResumeSection() {
 	return (
 		<section className="relative w-full min-h-screen py-16 px-4 md:px-8">
 			<h2 className="text-3xl md:text-5xl font-bold text-white text-center mb-12">
-				Experience & Education
+				My Journey
 			</h2>
 
 			<div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-6">
