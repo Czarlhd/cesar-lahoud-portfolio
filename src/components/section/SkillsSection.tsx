@@ -1,7 +1,7 @@
 "use client";
 
 import { SKILLS } from "@/data/resume";
-import SkillTreeViz from "./SkillTreeViz";
+import SkillTreeViz from "@/components/skills/SkillTreeViz";
 
 const TREE_COLORS: Record<string, string> = {
 	Software: "#60a5fa",

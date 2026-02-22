@@ -43,8 +43,8 @@ export default function ContactSection() {
 			id="contact"
 			className="max-w-[800px] backdrop-blur-[18px] bg-[#11121617] z-[20] w-full mx-auto rounded-none md:rounded-2xl p-4 md:p-8 shadow-input bg-white dark:bg-black"
 		>
-			<h2 className="font-bold text-4xl text-neutral-800 dark:text-neutral-200">
-				Contact Me!
+			<h2 className="bg-clip-text text-transparent text-center bg-gradient-to-b from-neutral-900 to-neutral-700 dark:from-neutral-600 dark:to-white text-2xl md:text-4xl lg:text-7xl font-sans py-2 md:py-10 relative z-20 font-bold tracking-tight">
+				Contact Me
 			</h2>
 			{loadingMessage?.message && (
 				<p
