@@ -109,6 +109,7 @@ export default function SystemDetail({ project, onClose }: SystemDetailProps) {
 									const count = project.narratives.filter(
 										(n) => n.type === tab.id,
 									).length;
+									if (count === 0) return null;
 									return (
 										<button
 											key={tab.id}

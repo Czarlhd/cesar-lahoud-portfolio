@@ -510,7 +510,7 @@ const HOME_SERVER_PROJECT: Project = {
 		"A personal home server built on Proxmox with LXC containers and Docker, hosting media streaming, photo backup with ML classification, and system monitoring — all accessible remotely via Tailscale VPN.",
 	accentColor: "#22c55e",
 	icon: "server",
-	startDate: "2024",
+	startDate: "2026",
 	techStack: ["Proxmox", "Docker", "Tailscale", "Linux"],
 
 	components: [
@@ -874,7 +874,7 @@ const HOME_SERVER_PROJECT: Project = {
 			id: "n1",
 			type: "constraint",
 			title: "Single GPU, Multiple Consumers",
-			body: "Only one GPU available, but both the media server (transcoding) and photo app (ML inference) need it. GPU passthrough in LXC requires careful cgroup configuration and can only be fully assigned to one container at a time, or shared via device node mapping.",
+			body: "Only one GPU available, but both the media server (transcoding) and photo app (ML inference) need it. GPU passthrough in LXC allows multiple LXCs to share the GPU.",
 			relatedComponentIds: [
 				"gpu",
 				"lxc-media",
@@ -887,7 +887,7 @@ const HOME_SERVER_PROJECT: Project = {
 			id: "n2",
 			type: "constraint",
 			title: "LXC vs VM Trade-off",
-			body: "LXC containers share the host kernel, meaning less overhead but also less isolation. Full VMs would have been heavier but offer better GPU passthrough support out of the box.",
+			body: "LXC containers share the host kernel, meaning less overhead, isolation and are easier to setup. Full VMs would have been heavier but offer better GPU passthrough support out of the box.",
 			relatedComponentIds: [
 				"proxmox",
 				"lxc-media",
@@ -899,18 +899,11 @@ const HOME_SERVER_PROJECT: Project = {
 			id: "n3",
 			type: "constraint",
 			title: "No Public IP / Dynamic DNS",
-			body: "The home network does not expose services publicly. All remote access goes through Tailscale — no port forwarding, no dynamic DNS, and no SSL certificate management for external access.",
+			body: "The home network does not expose services publicly. All remote access goes through Tailscale. There is no need for port forwarding, no dynamic DNS, and no SSL certificate management for external access.",
 			relatedComponentIds: ["tailscale"],
 		},
 
 		// Tradeoffs
-		{
-			id: "n4",
-			type: "tradeoff",
-			title: "LXC over Full VMs",
-			body: "Chose LXC containers over full VMs for lower memory overhead and faster boot times. The tradeoff is reduced isolation and more complex GPU passthrough configuration compared to QEMU/KVM VMs.",
-			relatedComponentIds: ["proxmox", "lxc-media", "lxc-photos"],
-		},
 		{
 			id: "n5",
 			type: "tradeoff",
@@ -928,7 +921,7 @@ const HOME_SERVER_PROJECT: Project = {
 			id: "n6",
 			type: "decision",
 			title: "Tailscale for Remote Access",
-			body: "Selected Tailscale over WireGuard manual setup or Cloudflare Tunnels. Tailscale provides zero-config mesh networking with MagicDNS, ACLs, and works behind NAT without port forwarding. Simplicity outweighed the dependency on a third-party service.",
+			body: "Selected Tailscale over WireGuard manual setup or Cloudflare Tunnels. Tailscale provides zero-config mesh networking with MagicDNS, ACLs, and works behind NAT without port forwarding.",
 			relatedComponentIds: ["tailscale"],
 		},
 		{
@@ -938,27 +931,20 @@ const HOME_SERVER_PROJECT: Project = {
 			body: "Chose Proxmox over bare Debian + manual LXC or TrueNAS because Proxmox provides a web GUI for container management, snapshot/backup tools, and a mature ecosystem while still being Debian underneath.",
 			relatedComponentIds: ["proxmox"],
 		},
-		{
-			id: "n8",
-			type: "decision",
-			title: "Direct Disk Mounting over NAS",
-			body: "Mounted physical disks directly into containers rather than running a NAS layer (SMB/NFS). Reduces latency and complexity for a single-server setup where network file sharing is unnecessary.",
-			relatedComponentIds: ["disks", "lxc-media", "lxc-photos"],
-		},
 
 		// Lessons
 		{
 			id: "n9",
 			type: "lesson",
 			title: "GPU Passthrough Requires Kernel-Level Config",
-			body: "Getting GPU passthrough working in LXC required editing cgroup device rules, mapping /dev/dri and /dev/nvidia* into the container, and ensuring host kernel modules were loaded. Documentation is sparse — most learning came from forum posts and trial-and-error.",
+			body: "Getting GPU passthrough working in LXC required editing cgroup device rules, mapping /dev/dri and /dev/nvidia* into the container, and ensuring host kernel modules were loaded.",
 			relatedComponentIds: ["gpu", "lxc-media", "lxc-photos"],
 		},
 		{
 			id: "n10",
 			type: "lesson",
 			title: "Unix Permissions Are Everything",
-			body: "Disk mount permissions between host and LXC containers require careful UID/GID mapping. Unprivileged containers remap UIDs, so a file owned by UID 1000 on the host appears as a different UID inside the container. Learning to configure idmap was essential.",
+			body: "Disk mount permissions between host and LXC containers require careful UID/GID mapping. Unprivileged containers remap UIDs, so a file owned by UID 1000 on the host appears as a different UID inside the container.",
 			relatedComponentIds: ["disks", "proxmox"],
 		},
 		{
@@ -976,10 +962,10 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 	name: "Gift Website",
 	tagline: "A personal website built as a gift for my girlfriend",
 	description:
-		"A custom-built website using Next.js with React and CSS, deployed on Vercel. Features five unique pages including a photo gallery, relationship timeline, love letters, a shared bucket list, and a home page with animated greetings. All images stored locally in the project.",
+		"A custom-built website using Next.js with React and CSS, deployed on Vercel. Features four unique pages including a storybook, a custom crossword puzzle, a custom connections puzzle and a 'Be My valentine Page'.",
 	accentColor: "#f472b6",
 	icon: "heart",
-	startDate: "2025",
+	startDate: "Never Ending",
 	techStack: ["Next.js", "React", "CSS", "Vercel"],
 
 	components: [
@@ -987,22 +973,11 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 		{
 			id: "vercel",
 			name: "Vercel",
-			description:
-				"Hosting platform with automatic deployments from Git and serverless functions",
+			description: "Hosting platform with automatic deployments from Git",
 			layer: "hardware" as const,
 			icon: "cloud",
 			color: "#f97316",
 			metadata: { type: "PaaS" },
-		},
-		{
-			id: "domain",
-			name: "Custom Domain",
-			description:
-				"Custom domain configured through Vercel with automatic SSL",
-			layer: "hardware" as const,
-			icon: "globe",
-			color: "#f97316",
-			metadata: { ssl: "Auto" },
 		},
 
 		// Layer 1: Framework
@@ -1041,52 +1016,48 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 		{
 			id: "page-home",
 			name: "Home",
-			description:
-				"Landing page with animated greeting, a countdown timer, and a welcome message",
+			description: "Landing page with the list of pages to explore",
 			layer: "runtime" as const,
 			icon: "home",
 			color: "#06b6d4",
 			metadata: { route: "/" },
 		},
 		{
-			id: "page-gallery",
-			name: "Gallery",
-			description:
-				"Photo gallery showcasing memories together with a grid layout and lightbox viewer",
+			id: "page-storybook",
+			name: "Storybook",
+			description: "A Storybook of our first year together",
 			layer: "runtime" as const,
-			icon: "image",
+			icon: "storybook",
 			color: "#06b6d4",
-			metadata: { route: "/gallery" },
+			metadata: { route: "/storybook" },
 		},
 		{
-			id: "page-timeline",
-			name: "Timeline",
-			description:
-				"Interactive relationship timeline with milestones, dates, and photos from key moments",
+			id: "page-crossword",
+			name: "Crossword",
+			description: "A Crossword puzzle about our lives",
 			layer: "runtime" as const,
-			icon: "calendar",
+			icon: "crossword",
 			color: "#06b6d4",
-			metadata: { route: "/timeline" },
+			metadata: { route: "/crossword" },
 		},
 		{
-			id: "page-letters",
-			name: "Letters",
+			id: "page-connections",
+			name: "Connections",
 			description:
-				"A collection of personal letters and notes with reveal animations",
+				"A recreation of the New York Times 'Connections' game with custom clues about us",
 			layer: "runtime" as const,
-			icon: "mail",
+			icon: "connections",
 			color: "#06b6d4",
-			metadata: { route: "/letters" },
+			metadata: { route: "/connections" },
 		},
 		{
-			id: "page-bucket-list",
-			name: "Bucket List",
-			description:
-				"Shared bucket list with items to do together, checkable entries, and progress tracking",
+			id: "page-be-my-valentine",
+			name: "Be My Valentine",
+			description: "A fun page asking her to be my valentine",
 			layer: "runtime" as const,
-			icon: "list",
+			icon: "heart",
 			color: "#06b6d4",
-			metadata: { route: "/bucket-list" },
+			metadata: { route: "/be-my-valentine" },
 		},
 
 		// Layer 4: Data & Assets
@@ -1104,7 +1075,7 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 			id: "static-data",
 			name: "Static Data",
 			description:
-				"Timeline events, letters, and bucket list items stored as typed JSON data files",
+				"Storybook content, crossword clues, and connections data stored in local JSON files",
 			layer: "application" as const,
 			icon: "database",
 			color: "#22c55e",
@@ -1131,12 +1102,6 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 			type: "passthrough" as const,
 			label: "Build & deploy",
 		},
-		{
-			from: "domain",
-			to: "vercel",
-			type: "network" as const,
-			label: "DNS resolution",
-		},
 
 		// Framework → UI
 		{
@@ -1161,25 +1126,25 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 		},
 		{
 			from: "react",
-			to: "page-gallery",
+			to: "page-storybook",
 			type: "passthrough" as const,
 			label: "Components",
 		},
 		{
 			from: "react",
-			to: "page-timeline",
+			to: "page-crossword",
 			type: "passthrough" as const,
 			label: "Components",
 		},
 		{
 			from: "react",
-			to: "page-letters",
+			to: "page-connections",
 			type: "passthrough" as const,
 			label: "Components",
 		},
 		{
 			from: "react",
-			to: "page-bucket-list",
+			to: "page-be-my-valentine",
 			type: "passthrough" as const,
 			label: "Components",
 		},
@@ -1191,50 +1156,56 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 		},
 		{
 			from: "css",
-			to: "page-gallery",
+			to: "page-storybook",
 			type: "passthrough" as const,
 			label: "Styles",
 		},
 		{
 			from: "css",
-			to: "page-letters",
+			to: "page-crossword",
+			type: "passthrough" as const,
+			label: "Styles",
+		},
+		{
+			from: "css",
+			to: "page-connections",
+			type: "passthrough" as const,
+			label: "Styles",
+		},
+		{
+			from: "css",
+			to: "page-be-my-valentine",
 			type: "passthrough" as const,
 			label: "Styles",
 		},
 
 		// Pages → Data
 		{
-			from: "page-gallery",
+			from: "page-storybook",
 			to: "images",
 			type: "data-flow" as const,
 			label: "Photo assets",
 			animated: true,
 		},
 		{
-			from: "page-timeline",
+			from: "page-storybook",
 			to: "static-data",
 			type: "data-flow" as const,
 			label: "Event data",
 			animated: true,
 		},
 		{
-			from: "page-timeline",
-			to: "images",
-			type: "data-flow" as const,
-			label: "Milestone photos",
-		},
-		{
-			from: "page-letters",
+			from: "page-connections",
 			to: "static-data",
 			type: "data-flow" as const,
-			label: "Letter content",
+			label: "Milestone photos",
 			animated: true,
 		},
 		{
-			from: "page-bucket-list",
+			from: "page-crossword",
 			to: "static-data",
 			type: "data-flow" as const,
-			label: "List items",
+			label: "Letter content",
 			animated: true,
 		},
 
@@ -1248,13 +1219,6 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 		{
 			from: "vercel-edge",
 			to: "page-home",
-			type: "network" as const,
-			label: "Page delivery",
-			animated: true,
-		},
-		{
-			from: "vercel-edge",
-			to: "page-gallery",
 			type: "network" as const,
 			label: "Page delivery",
 			animated: true,
@@ -1294,10 +1258,10 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 			color: "#06b6d4",
 			componentIds: [
 				"page-home",
-				"page-gallery",
-				"page-timeline",
-				"page-letters",
-				"page-bucket-list",
+				"page-storybook",
+				"page-crossword",
+				"page-connections",
+				"page-be-my-valentine",
 			],
 		},
 		{
@@ -1324,7 +1288,7 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 			id: "gf-n1",
 			type: "constraint" as const,
 			title: "Fully Static — No Backend",
-			body: "The site has no database or API. All content (letters, timeline events, bucket list) is stored as static typed data files bundled at build time. This keeps hosting free on Vercel and removes any maintenance overhead.",
+			body: "The site has no database or API. All content is stored as static typed data files bundled at build time. This keeps hosting free on Vercel and removes any maintenance overhead.",
 			relatedComponentIds: ["static-data", "vercel"],
 		},
 		{
@@ -1343,13 +1307,6 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 			body: "Chose static JSON files over a headless CMS. Updating content requires a code push, but avoids the complexity of CMS integration, API keys, and the risk of a third-party service going down.",
 			relatedComponentIds: ["static-data", "nextjs"],
 		},
-		{
-			id: "gf-n4",
-			type: "tradeoff" as const,
-			title: "CSS over a UI Framework",
-			body: "Used plain CSS instead of Tailwind or a component library. More verbose but provides full control over the design with no framework overhead or learning curve for custom animations.",
-			relatedComponentIds: ["css"],
-		},
 
 		// Decisions
 		{
@@ -1362,7 +1319,7 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 		{
 			id: "gf-n6",
 			type: "decision" as const,
-			title: "Five Distinct Pages over Single Page",
+			title: "Four Distinct Pages over Single Page",
 			body: "Opted for a multi-page layout with dedicated routes instead of a single scrolling page. Each page represents a different 'gift' — giving each section its own space and allowing the recipient to explore at their own pace.",
 			relatedComponentIds: [
 				"page-home",
@@ -1379,22 +1336,6 @@ const GIRLFRIEND_SITE_PROJECT: Project = {
 			body: "Used Next.js Image component to automatically optimize local images at build time — resizing, format conversion, and lazy loading without needing an external image service.",
 			relatedComponentIds: ["images", "nextjs"],
 		},
-
-		// Lessons
-		{
-			id: "gf-n8",
-			type: "lesson" as const,
-			title: "Design for the Audience, Not the Developer",
-			body: "The first version was too 'developer-looking' with monospace fonts and dark themes. Redesigned with softer colors, rounded elements, and handwriting-style fonts after realizing the audience isn't a developer.",
-			relatedComponentIds: ["css", "page-home"],
-		},
-		{
-			id: "gf-n9",
-			type: "lesson" as const,
-			title: "CSS Animations Can Replace Libraries",
-			body: "Custom CSS keyframe animations handled page transitions and reveal effects without needing Framer Motion or GSAP. Keeping the animation layer simple reduced bundle size and complexity.",
-			relatedComponentIds: ["css", "page-letters", "page-home"],
-		},
 	],
 };
 
@@ -1407,7 +1348,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 		"A carefully planned dinner featuring red wine braised short ribs with creamy Yukon Gold mashed potatoes, finished with individual chocolate fondants with molten centers. Every element timed to land on the table together.",
 	accentColor: "#dc2626",
 	icon: "chef-hat",
-	startDate: "2025",
+	startDate: "Any Night",
 	techStack: ["Braising", "Baking", "Plating"],
 
 	components: [
@@ -1415,8 +1356,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 		{
 			id: "short-ribs",
 			name: "Short Ribs",
-			description:
-				"Bone-in beef short ribs, the centerpiece protein — seasoned and seared before a long braise",
+			description: "Bone-in beef short ribs, the dinner's centerpiece",
 			layer: "hardware" as const,
 			icon: "meat",
 			color: "#f97316",
@@ -1426,7 +1366,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "potatoes",
 			name: "Yukon Gold Potatoes",
 			description:
-				"Naturally buttery potatoes that mash into a rich, creamy texture without needing much added fat",
+				"Naturally buttery potatoes perfect for getting the perfect creamy texture",
 			layer: "hardware" as const,
 			icon: "leaf",
 			color: "#f97316",
@@ -1435,18 +1375,27 @@ const DINNER_NIGHT_PROJECT: Project = {
 		{
 			id: "chocolate",
 			name: "Dark Chocolate",
-			description:
-				"High-quality dark chocolate (70%) for the fondant — rich flavor with the right melting point for a molten center",
+			description: "High-quality dark chocolate (70%) for the fondant",
 			layer: "hardware" as const,
 			icon: "candy",
 			color: "#f97316",
 			metadata: { cacao: "70%" },
 		},
 		{
-			id: "butter-cream",
-			name: "Butter & Cream",
+			id: "butter-sugar-flour",
+			name: "Butter, Sugar & Flour",
+			description: "Butter, Sugar and Flour for the fondant",
+			layer: "hardware" as const,
+			icon: "butter",
+			color: "#f97316",
+			metadata: { type: "Unsalted" },
+			tags: ["dairy"],
+		},
+		{
+			id: "cream",
+			name: "Cream",
 			description:
-				"Shared base ingredients across all three dishes — butter for searing, cream for potatoes, both in the fondant",
+				"Heavy cream infused with Rosemary and Garlic for the mashed potatoes",
 			layer: "hardware" as const,
 			icon: "droplet",
 			color: "#f97316",
@@ -1455,7 +1404,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "aromatics",
 			name: "Aromatics & Wine",
 			description:
-				"Onions, garlic, thyme, bay leaves, and a full bottle of red wine for the braising liquid",
+				"Onions, garlic, carrots, celery, thyme, bay leaves, a full bottle of red wine and beef stock for the braising liquid",
 			layer: "hardware" as const,
 			icon: "wine",
 			color: "#f97316",
@@ -1467,7 +1416,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dutch-oven",
 			name: "Dutch Oven",
 			description:
-				"Heavy cast-iron pot for searing the ribs on the stovetop and then transferring to the oven for a low-and-slow braise",
+				"Heavy cast-iron pot for searing the ribs on the stovetop and then transferring to the oven to braise for 3 hours at 350°F",
 			layer: "os" as const,
 			icon: "pot",
 			color: "#3b82f6",
@@ -1477,7 +1426,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "oven-stove",
 			name: "Stovetop & Oven",
 			description:
-				"The stovetop handles searing and boiling, the oven handles braising at 325°F and baking fondants at 425°F",
+				"The stovetop used for boiling the potatoes and preparing the cream infusion",
 			layer: "os" as const,
 			icon: "flame",
 			color: "#3b82f6",
@@ -1499,7 +1448,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "braising",
 			name: "Braising",
 			description:
-				"Low-and-slow cooking in liquid — sear first for crust, then braise covered for 3 hours until fork-tender",
+				"Low-and-slow cooking in of the short ribs for 3 hours until fork-tender",
 			layer: "virtualization" as const,
 			icon: "clock",
 			color: "#8b5cf6",
@@ -1509,7 +1458,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "boil-mash",
 			name: "Boiling & Mashing",
 			description:
-				"Boil potatoes until tender, then mash with butter and warm cream for a smooth, lump-free finish",
+				"Boil potatoes until tender, then mash with the infused cream and season to taste",
 			layer: "virtualization" as const,
 			icon: "tool",
 			color: "#8b5cf6",
@@ -1519,19 +1468,18 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "baking",
 			name: "Baking",
 			description:
-				"High heat for exactly 12 minutes — the fondant exterior sets while the center stays molten",
+				"High heat for exactly 11 minutes to get a perfect molten center",
 			layer: "virtualization" as const,
 			icon: "clock",
 			color: "#8b5cf6",
-			metadata: { time: "12 min", temp: "425°F" },
+			metadata: { time: "11 min", temp: "425°F" },
 		},
 
 		// Layer 3: Dishes
 		{
 			id: "dish-ribs",
 			name: "Braised Short Ribs",
-			description:
-				"Fork-tender short ribs in a reduced red wine sauce — the bone slides out clean when done right",
+			description: "Fork-tender short ribs in a reduced red wine sauce",
 			layer: "runtime" as const,
 			icon: "star",
 			color: "#06b6d4",
@@ -1540,8 +1488,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 		{
 			id: "dish-potatoes",
 			name: "Mashed Potatoes",
-			description:
-				"Creamy Yukon Gold mash with butter and cream — the perfect bed for the short ribs and their sauce",
+			description: "Creamy Yukon Gold mash with butter and cream",
 			layer: "runtime" as const,
 			icon: "bowl",
 			color: "#06b6d4",
@@ -1572,7 +1519,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "garnish",
 			name: "Garnishes",
 			description:
-				"Fresh thyme sprigs on the ribs, flaky sea salt on the potatoes, powdered sugar and berries on the fondant",
+				"Fresh thyme sprigs on the ribs, flaky sea salt on the potatoes, vanilla ice cream on the fondant",
 			layer: "application" as const,
 			icon: "leaf",
 			color: "#22c55e",
@@ -1583,7 +1530,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dinner-service",
 			name: "Dinner Service",
 			description:
-				"Everything hits the table at the right temperature — ribs rested, potatoes fresh, fondant straight from the oven",
+				"Everything hits the table at the right temperature. The ribs rested and tender, potatoes fresh, fondant straight from the oven",
 			layer: "networking" as const,
 			icon: "users",
 			color: "#eab308",
@@ -1612,7 +1559,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			label: "Boil",
 		},
 		{
-			from: "butter-cream",
+			from: "cream",
 			to: "oven-stove",
 			type: "passthrough" as const,
 			label: "Mash enrichment",
@@ -1624,7 +1571,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			label: "Fondant batter",
 		},
 		{
-			from: "butter-cream",
+			from: "butter-sugar-flour",
 			to: "ramekins",
 			type: "passthrough" as const,
 			label: "Batter & grease",
@@ -1646,6 +1593,12 @@ const DINNER_NIGHT_PROJECT: Project = {
 		{
 			from: "oven-stove",
 			to: "braising",
+			type: "passthrough" as const,
+			label: "Oven heat",
+		},
+		{
+			from: "short-ribs",
+			to: "oven-stove",
 			type: "passthrough" as const,
 			label: "Oven heat",
 		},
@@ -1726,10 +1679,11 @@ const DINNER_NIGHT_PROJECT: Project = {
 			color: "#f97316",
 			componentIds: [
 				"short-ribs",
-				"potatoes",
-				"chocolate",
-				"butter-cream",
 				"aromatics",
+				"potatoes",
+				"cream",
+				"chocolate",
+				"butter-sugar-flour",
 			],
 		},
 		{
@@ -1780,7 +1734,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dn-n1",
 			type: "constraint" as const,
 			title: "Timing Three Dishes to Land Together",
-			body: "The ribs need 3 hours of braising, the potatoes 25 minutes, and the fondant exactly 12 minutes. Everything has to hit the table at the same time and at the right temperature. The ribs go in first, potatoes start when the ribs are resting, and the fondant goes into the oven right as you plate the main course.",
+			body: "The ribs need 3 hours of braising, the potatoes 25 minutes, and the fondant exactly 11 minutes. The short ribs and mashed potatoes have to be ready at the same time. The ribs go in first, potatoes start when the ribs are resting, and the fondant goes into the oven as you are finishing dinner.",
 			relatedComponentIds: [
 				"braising",
 				"boil-mash",
@@ -1792,7 +1746,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dn-n2",
 			type: "constraint" as const,
 			title: "One Oven, Two Temperatures",
-			body: "The short ribs braise at 325°F and the fondant bakes at 425°F. Since both need oven time, the ribs have to finish and come out before cranking the heat up for the fondant. There's no overlap — it's sequential, not parallel.",
+			body: "The short ribs braise at 325°F and the fondant bakes at 425°F. Since both need oven time, the ribs have to finish and come out before cranking the heat up for the fondant.",
 			relatedComponentIds: ["oven-stove", "dutch-oven", "ramekins"],
 		},
 
@@ -1801,13 +1755,13 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dn-n3",
 			type: "tradeoff" as const,
 			title: "Bone-In vs Boneless Short Ribs",
-			body: "Bone-in short ribs give better flavor from the marrow and a more impressive presentation, but they take longer to braise and are trickier to plate neatly. The bone should slide out cleanly when done — if it doesn't, they need more time.",
+			body: "Bone-in short ribs give better flavor from the marrow and a more impressive presentation, but they take longer to braise and are trickier to plate neatly. The bone should slide out cleanly when done.",
 			relatedComponentIds: ["short-ribs", "braising", "dish-ribs"],
 		},
 		{
 			id: "dn-n4",
 			type: "tradeoff" as const,
-			title: "Dark Chocolate — Rich but Unforgiving",
+			title: "Dark Chocolate",
 			body: "70% dark chocolate gives a deeper, more sophisticated fondant than milk chocolate, but the window between perfectly molten and overbaked is much smaller. One extra minute in the oven and the center sets completely.",
 			relatedComponentIds: ["chocolate", "baking", "dish-fondant"],
 		},
@@ -1816,8 +1770,8 @@ const DINNER_NIGHT_PROJECT: Project = {
 		{
 			id: "dn-n5",
 			type: "decision" as const,
-			title: "Red Wine Braise over Stock",
-			body: "Chose a full bottle of red wine as the primary braising liquid instead of beef stock. It reduces into a naturally glossy, complex sauce that doesn't need thickening. The alcohol cooks off but the depth of flavor stays.",
+			title: "Red Wine Braise and Beef Stock",
+			body: "Chose a full bottle of red wine as the primary braising liquid instead in addition to beef stock to intensify the flavor. It reduces into a naturally glossy, complex sauce. The alcohol cooks off but the depth of flavor stays.",
 			relatedComponentIds: ["aromatics", "braising", "dish-ribs"],
 		},
 		{
@@ -1831,7 +1785,7 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dn-n7",
 			type: "decision" as const,
 			title: "Individual Ramekins for Fondant",
-			body: "Individual portions instead of a shared dessert. Each ramekin is its own self-contained moment — you break through the top and the molten center flows out. Portion control is also easier and every serving is consistent.",
+			body: "Individual portions instead of a shared dessert. Each ramekin is its own self-contained moment with a molten center flows out.",
 			relatedComponentIds: ["ramekins", "dish-fondant", "plating"],
 		},
 
@@ -1840,14 +1794,14 @@ const DINNER_NIGHT_PROJECT: Project = {
 			id: "dn-n8",
 			type: "lesson" as const,
 			title: "Rest the Ribs in Their Liquid",
-			body: "Pulling the ribs out of the braising liquid immediately makes them dry out fast. Letting them rest in the liquid for 15–20 minutes after cooking lets them reabsorb moisture and makes them easier to plate without falling apart.",
+			body: "Pulling the ribs out of the braising liquid immediately makes them dry out fast. Letting them rest in the liquid for 15-20 minutes after cooking lets them reabsorb moisture and makes them easier to plate without falling apart.",
 			relatedComponentIds: ["dish-ribs", "braising", "dutch-oven"],
 		},
 		{
 			id: "dn-n9",
 			type: "lesson" as const,
 			title: "Underbake the Fondant",
-			body: "The fondant should still jiggle in the center when pulled from the oven. It keeps cooking from residual heat for another minute. If it looks done in the oven, it's already overbaked. The molten center is the entire point of the dish.",
+			body: "The fondant should still jiggle in the center when pulled from the oven. It keeps cooking from residual heat for another minute.",
 			relatedComponentIds: ["dish-fondant", "baking", "oven-stove"],
 		},
 	],
