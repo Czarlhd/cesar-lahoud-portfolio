@@ -6,44 +6,15 @@ import {
 	SystemConnection,
 	ArchitectureLayer,
 } from "@/data/resume";
-import {
-	IconServer,
-	IconCpu,
-	IconDeviceDesktop,
-	IconBrain,
-	IconDeviceSdCard,
-	IconBox,
-	IconContainer,
-	IconBrandDocker,
-	IconPlayerPlay,
-	IconPhoto,
-	IconLayoutDashboard,
-	IconNetwork,
-} from "@tabler/icons-react";
+import { ICON_MAP } from "./SystemPanel";
 
 // ========================
 // Icon mapping
 // ========================
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const ICON_MAP: Record<string, React.ComponentType<any>> = {
-	server: IconServer,
-	cpu: IconCpu,
-	memory: IconDeviceDesktop,
-	gpu: IconBrain,
-	"hard-drive": IconDeviceSdCard,
-	box: IconBox,
-	container: IconContainer,
-	docker: IconBrandDocker,
-	play: IconPlayerPlay,
-	image: IconPhoto,
-	"layout-dashboard": IconLayoutDashboard,
-	network: IconNetwork,
-};
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function getIcon(iconId: string): React.ComponentType<any> {
-	return ICON_MAP[iconId] || IconServer;
+	return ICON_MAP[iconId] || ICON_MAP["server"];
 }
 
 // ========================

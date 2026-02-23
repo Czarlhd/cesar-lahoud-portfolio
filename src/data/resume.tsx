@@ -971,7 +971,7 @@ const HOME_SERVER_PROJECT: Project = {
 	],
 };
 
-export const GIRLFRIEND_SITE_PROJECT: Project = {
+const GIRLFRIEND_SITE_PROJECT: Project = {
 	id: "girlfriend-site",
 	name: "Gift Website",
 	tagline: "A personal website built as a gift for my girlfriend",
@@ -1398,7 +1398,7 @@ export const GIRLFRIEND_SITE_PROJECT: Project = {
 	],
 };
 
-export const DINNER_NIGHT_PROJECT: Project = {
+const DINNER_NIGHT_PROJECT: Project = {
 	id: "dinner-night",
 	name: "Dinner Night",
 	tagline:
